@@ -575,8 +575,7 @@ function ServicesTab() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .rpc("get_service_stats")
+    Promise.resolve(supabase.rpc("get_service_stats"))
       .then(({ data, error }) => {
         if (error) throw error;
         setStats(data as ServiceStat[]);
@@ -672,8 +671,7 @@ function CustomersTab() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    supabase
-      .rpc("get_all_customers")
+    Promise.resolve(supabase.rpc("get_all_customers"))
       .then(({ data, error }) => {
         if (error) throw error;
         setCustomers(data as CustomerRow[]);
