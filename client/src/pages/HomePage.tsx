@@ -33,6 +33,45 @@ function useFadeIn() {
   return ref;
 }
 
+// ─── Typewriter hook ──────────────────────────────────────────────────────────
+const TYPING_WORDS = ["appointment", "haircut", "facial", "massage", "treatment"];
+
+function useTypewriter(speed = 80, pause = 1800) {
+  const [displayed, setDisplayed] = useState("");
+  const [wordIdx, setWordIdx]     = useState(0);
+  const [charIdx, setCharIdx]     = useState(0);
+  const [deleting, setDeleting]   = useState(false);
+
+  useEffect(() => {
+    const word = TYPING_WORDS[wordIdx];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!deleting && charIdx <= word.length) {
+      timeout = setTimeout(() => {
+        setDisplayed(word.slice(0, charIdx));
+        setCharIdx((c) => c + 1);
+        if (charIdx === word.length) {
+          // finished typing — pause then start deleting
+          timeout = setTimeout(() => setDeleting(true), pause);
+        }
+      }, speed);
+    } else if (deleting && charIdx >= 0) {
+      timeout = setTimeout(() => {
+        setDisplayed(word.slice(0, charIdx));
+        setCharIdx((c) => c - 1);
+        if (charIdx === 0) {
+          setDeleting(false);
+          setWordIdx((w) => (w + 1) % TYPING_WORDS.length);
+        }
+      }, speed / 2);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [charIdx, deleting, wordIdx, speed, pause]);
+
+  return displayed;
+}
+
 // ─── Count-up hook ────────────────────────────────────────────────────────────
 function useCountUp(target: number, duration = 1400) {
   const [value, setValue] = useState(0);
@@ -146,6 +185,8 @@ export default function HomePage() {
   const { selectedService, setService } = useBookingStore();
   const navigate = useNavigate();
 
+  const typedWord = useTypewriter();
+
   // fade refs
   const featuresRef  = useFadeIn();
   const stepsRef     = useFadeIn();
@@ -181,7 +222,10 @@ export default function HomePage() {
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-5 leading-tight tracking-tight">
             Book your perfect <br className="hidden sm:block" />
-            <span className="text-primary-200">appointment</span>
+            <span className="text-primary-200">
+              {typedWord}
+              <span className="inline-block w-[3px] h-[0.85em] bg-primary-200 ml-1 align-middle animate-pulse rounded-sm" />
+            </span>
           </h1>
           <p className="text-lg text-primary-100 mb-3 max-w-xl mx-auto">
             Premium Salon &amp; Spa — New York
