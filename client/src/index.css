@@ -69,6 +69,62 @@
   .focus-ring { @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2; }
 }
 
+/* ── Animated gradient hero ──────────────────────────────────────────────── */
+.hero-gradient {
+  background: linear-gradient(-45deg, #1d4ed8, #2563eb, #4f46e5, #0ea5e9);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+/* ── Scroll-triggered fade-in ────────────────────────────────────────────── */
+.fade-section {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.fade-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Hover lift + blue glow ──────────────────────────────────────────────── */
+.hover-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(37, 99, 235, 0.15);
+}
+
+/* ── Shimmer sweep button ────────────────────────────────────────────────── */
+.shimmer-btn { position: relative; overflow: hidden; }
+.shimmer-sweep {
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+  transition: left 0.55s ease;
+  pointer-events: none;
+}
+.shimmer-btn:hover .shimmer-sweep { left: 140%; }
+
+/* ── Infinite marquee ────────────────────────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+  width: max-content;
+}
+.animate-marquee:hover { animation-play-state: paused; }
+
 /* react-day-picker override */
 .rdp { --rdp-accent-color: #2563eb; --rdp-background-color: #eff6ff; }
 .rdp-day_selected { background-color: #2563eb !important; }
